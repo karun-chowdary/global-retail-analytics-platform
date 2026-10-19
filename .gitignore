@@ -218,3 +218,26 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Secrets and credentials
+.env
+*.pem
+profiles.yml
+secrets.*
+
+# Data (never commit the raw dataset)
+data/
+*.csv
+*.parquet
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Tooling
+.venv/
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+great_expectations/uncommitted/
