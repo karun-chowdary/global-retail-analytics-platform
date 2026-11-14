@@ -1,0 +1,799 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "OracleSource",
+            "oracleReaderQuery": "SELECT *\nFROM retail_src.orders",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None",
+            "additionalColumns": [
+              {
+                "name": "ingestion_timestamp",
+                "value": {
+                  "value": "@utcNow()",
+                  "type": "Expression"
+                }
+              },
+              {
+                "name": "source_system",
+                "value": {
+                  "value": "oracle",
+                  "type": "Expression"
+                }
+              },
+              {
+                "name": "batch_id",
+                "value": {
+                  "value": "@pipeline().RunId",
+                  "type": "Expression"
+                }
+              }
+            ],
+            "numberPrecision": 38,
+            "numberScale": 18,
+            "datasetSettings": {
+              "type": "OracleTable",
+              "schema": [],
+              "externalReferences": {
+                "connection": "1bb72083-1aea-4694-925a-32557a50a5f3"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "OverwriteSchema",
+            "applyVOrder": false,
+            "enableTimestampNtz": false,
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "schema": "dbo",
+                "table": "ora_orders"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "lh_bronze",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "39a5d3a0-45d3-b3b2-4ca6-14d8ef5ffbaf",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "mappings": [
+              {
+                "source": {
+                  "name": "ORDER_ID",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "32",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "ORDER_ID",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "CUSTOMER_ID",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "32",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "CUSTOMER_ID",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "ORDER_STATUS",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "20",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "ORDER_STATUS",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "ORDER_PURCHASE_TIMESTAMP",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "ORDER_PURCHASE_TIMESTAMP",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ORDER_APPROVED_AT",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "ORDER_APPROVED_AT",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ORDER_DELIVERED_CARRIER_DATE",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "ORDER_DELIVERED_CARRIER_DATE",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ORDER_DELIVERED_CUSTOMER_DATE",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "ORDER_DELIVERED_CUSTOMER_DATE",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ORDER_ESTIMATED_DELIVERY_DATE",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "ORDER_ESTIMATED_DELIVERY_DATE",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "LAST_MODIFIED",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "LAST_MODIFIED",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ingestion_timestamp",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "ingestion_timestamp",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "source_system",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "source_system",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "batch_id",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "batch_id",
+                  "physicalType": "string"
+                }
+              }
+            ],
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "copy_ora_orders",
+        "dependsOn": []
+      },
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "OracleSource",
+            "oracleReaderQuery": "SELECT *\nFROM retail_src.order_items",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None",
+            "additionalColumns": [
+              {
+                "name": "ingestion_timestamp",
+                "value": {
+                  "value": "@utcNow()",
+                  "type": "Expression"
+                }
+              },
+              {
+                "name": "source_system",
+                "value": {
+                  "value": "oracle",
+                  "type": "Expression"
+                }
+              },
+              {
+                "name": "batch_id",
+                "value": {
+                  "value": "@pipeline().RunId",
+                  "type": "Expression"
+                }
+              }
+            ],
+            "numberPrecision": 38,
+            "numberScale": 18,
+            "datasetSettings": {
+              "type": "OracleTable",
+              "schema": [],
+              "externalReferences": {
+                "connection": "1bb72083-1aea-4694-925a-32557a50a5f3"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "OverwriteSchema",
+            "applyVOrder": false,
+            "enableTimestampNtz": false,
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "schema": "dbo",
+                "table": "ora_order_items"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "lh_bronze",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "39a5d3a0-45d3-b3b2-4ca6-14d8ef5ffbaf",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "mappings": [
+              {
+                "source": {
+                  "name": "ORDER_ID",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "32",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "ORDER_ID",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "ORDER_ITEM_ID",
+                  "type": "Int16",
+                  "physicalType": "number",
+                  "scale": 0,
+                  "precision": 4
+                },
+                "sink": {
+                  "name": "ORDER_ITEM_ID",
+                  "physicalType": "short"
+                }
+              },
+              {
+                "source": {
+                  "name": "PRODUCT_ID",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "32",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "PRODUCT_ID",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "SELLER_ID",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "32",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "SELLER_ID",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "SHIPPING_LIMIT_DATE",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "SHIPPING_LIMIT_DATE",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "PRICE",
+                  "type": "Double",
+                  "physicalType": "number",
+                  "scale": 2,
+                  "precision": 12
+                },
+                "sink": {
+                  "name": "PRICE",
+                  "physicalType": "double"
+                }
+              },
+              {
+                "source": {
+                  "name": "FREIGHT_VALUE",
+                  "type": "Double",
+                  "physicalType": "number",
+                  "scale": 2,
+                  "precision": 12
+                },
+                "sink": {
+                  "name": "FREIGHT_VALUE",
+                  "physicalType": "double"
+                }
+              },
+              {
+                "source": {
+                  "name": "LAST_MODIFIED",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "LAST_MODIFIED",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ingestion_timestamp",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "ingestion_timestamp",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "source_system",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "source_system",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "batch_id",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "batch_id",
+                  "physicalType": "string"
+                }
+              }
+            ],
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "copy_ora_order_items",
+        "dependsOn": []
+      },
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "OracleSource",
+            "oracleReaderQuery": "SELECT *\nFROM retail_src.order_payments",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None",
+            "additionalColumns": [
+              {
+                "name": "ingestion_timestamp",
+                "value": {
+                  "value": "@utcNow()",
+                  "type": "Expression"
+                }
+              },
+              {
+                "name": "source_system",
+                "value": {
+                  "value": "oracle",
+                  "type": "Expression"
+                }
+              },
+              {
+                "name": "batch_id",
+                "value": {
+                  "value": "@pipeline().RunId",
+                  "type": "Expression"
+                }
+              }
+            ],
+            "numberPrecision": 38,
+            "numberScale": 18,
+            "datasetSettings": {
+              "type": "OracleTable",
+              "schema": [],
+              "externalReferences": {
+                "connection": "1bb72083-1aea-4694-925a-32557a50a5f3"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "OverwriteSchema",
+            "applyVOrder": false,
+            "enableTimestampNtz": false,
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "schema": "dbo",
+                "table": "ora_order_payments"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "lh_bronze",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "39a5d3a0-45d3-b3b2-4ca6-14d8ef5ffbaf",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "mappings": [
+              {
+                "source": {
+                  "name": "ORDER_ID",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "32",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "ORDER_ID",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "PAYMENT_SEQUENTIAL",
+                  "type": "Int16",
+                  "physicalType": "number",
+                  "scale": 0,
+                  "precision": 4
+                },
+                "sink": {
+                  "name": "PAYMENT_SEQUENTIAL",
+                  "physicalType": "short"
+                }
+              },
+              {
+                "source": {
+                  "name": "PAYMENT_TYPE",
+                  "type": "String",
+                  "physicalType": "varchar2",
+                  "length": "20",
+                  "unit": "BYTE"
+                },
+                "sink": {
+                  "name": "PAYMENT_TYPE",
+                  "physicalType": "string",
+                  "unit": "BYTE"
+                }
+              },
+              {
+                "source": {
+                  "name": "PAYMENT_INSTALLMENTS",
+                  "type": "Int16",
+                  "physicalType": "number",
+                  "scale": 0,
+                  "precision": 4
+                },
+                "sink": {
+                  "name": "PAYMENT_INSTALLMENTS",
+                  "physicalType": "short"
+                }
+              },
+              {
+                "source": {
+                  "name": "PAYMENT_VALUE",
+                  "type": "Double",
+                  "physicalType": "number",
+                  "scale": 2,
+                  "precision": 12
+                },
+                "sink": {
+                  "name": "PAYMENT_VALUE",
+                  "physicalType": "double"
+                }
+              },
+              {
+                "source": {
+                  "name": "LAST_MODIFIED",
+                  "type": "DateTime",
+                  "physicalType": "timestamp",
+                  "scale": 6
+                },
+                "sink": {
+                  "name": "LAST_MODIFIED",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ingestion_timestamp",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "ingestion_timestamp",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "source_system",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "source_system",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "batch_id",
+                  "type": "String"
+                },
+                "sink": {
+                  "name": "batch_id",
+                  "physicalType": "string"
+                }
+              }
+            ],
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "copy_ora_order_payments",
+        "dependsOn": []
+      },
+      {
+        "type": "Script",
+        "typeProperties": {
+          "scripts": [
+            {
+              "text": {
+                "value": "@{concat('INSERT INTO audit.pipeline_runs (run_id, pipeline_name, activity_name, source_system, target_table, rows_read, rows_copied, copy_duration_s, status, logged_at_utc) VALUES (''', pipeline().RunId, ''', ''', pipeline().Pipeline, ''', ''copy_ora_orders'', ''oracle'', ''ora_orders'', ', activity('copy_ora_orders').output.rowsRead, ', ', activity('copy_ora_orders').output.rowsCopied, ', ', activity('copy_ora_orders').output.copyDuration, ', ''Succeeded'', GETDATE())')}",
+                "type": "Expression"
+              },
+              "type": "NonQuery"
+            }
+          ],
+          "scriptBlockExecutionTimeout": "02:00:00"
+        },
+        "linkedService": {
+          "name": "wh_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "d7d042a6-567b-8341-4b07-9638e09f2792",
+              "endpoint": "cmeok4vawvzergoknpnsmgb724-vz6suwnvntgenl65abty62bima.datawarehouse.fabric.microsoft.com",
+              "workspaceId": "00000000-0000-0000-0000-000000000000"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "log_ora_orders",
+        "dependsOn": [
+          {
+            "activity": "copy_ora_orders",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Script",
+        "typeProperties": {
+          "scripts": [
+            {
+              "text": {
+                "value": "@{concat('INSERT INTO audit.pipeline_runs (run_id, pipeline_name, activity_name, source_system, target_table, rows_read, rows_copied, copy_duration_s, status, logged_at_utc) VALUES (''', pipeline().RunId, ''', ''', pipeline().Pipeline, ''', ''copy_ora_order_payments'', ''oracle'', ''ora_order_payments'', ', activity('copy_ora_order_payments').output.rowsRead, ', ', activity('copy_ora_order_payments').output.rowsCopied, ', ', activity('copy_ora_order_payments').output.copyDuration, ', ''Succeeded'', GETDATE())')}",
+                "type": "Expression"
+              },
+              "type": "NonQuery"
+            }
+          ],
+          "scriptBlockExecutionTimeout": "02:00:00"
+        },
+        "linkedService": {
+          "name": "wh_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "d7d042a6-567b-8341-4b07-9638e09f2792",
+              "endpoint": "cmeok4vawvzergoknpnsmgb724-vz6suwnvntgenl65abty62bima.datawarehouse.fabric.microsoft.com",
+              "workspaceId": "00000000-0000-0000-0000-000000000000"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "log_ora_order_payments",
+        "dependsOn": [
+          {
+            "activity": "copy_ora_order_payments",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Script",
+        "typeProperties": {
+          "scripts": [
+            {
+              "text": {
+                "value": "@{concat('INSERT INTO audit.pipeline_runs (run_id, pipeline_name, activity_name, source_system, target_table, rows_read, rows_copied, copy_duration_s, status, logged_at_utc) VALUES (''', pipeline().RunId, ''', ''', pipeline().Pipeline, ''', ''copy_ora_order_items'', ''oracle'', ''ora_order_items'', ', activity('copy_ora_order_items').output.rowsRead, ', ', activity('copy_ora_order_items').output.rowsCopied, ', ', activity('copy_ora_order_items').output.copyDuration, ', ''Succeeded'', GETDATE())')}",
+                "type": "Expression"
+              },
+              "type": "NonQuery"
+            }
+          ],
+          "scriptBlockExecutionTimeout": "02:00:00"
+        },
+        "linkedService": {
+          "name": "wh_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "d7d042a6-567b-8341-4b07-9638e09f2792",
+              "endpoint": "cmeok4vawvzergoknpnsmgb724-vz6suwnvntgenl65abty62bima.datawarehouse.fabric.microsoft.com",
+              "workspaceId": "00000000-0000-0000-0000-000000000000"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "log_ora_order_items",
+        "dependsOn": [
+          {
+            "activity": "copy_ora_order_items",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
